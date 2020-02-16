@@ -19,15 +19,16 @@ const S3 = new AWS.S3();
     // Fargate tasks have their own isolation model anyway.
     // Use local /tmp instead of shared memory
 
-    let chromeOptions = new chrome.Options();
-    chromeOptions.addArguments(['--test-type', '--headless', '--no-sandbox', '--disable-dev-shm-usage'])
-    //chromeOptions2.args = ['--test-type', '--headless', '--no-sandbox', '--disable-dev-shm-usage']
-    let driver = new Builder()
-        .forBrowser('chrome')
-        .setChromeOptions(chromeOptions)
-        .build();
+
     // What to do when a job pops up on the queue.
     workQueue.on('message', async function (msg) { 
+        let chromeOptions = new chrome.Options();
+        chromeOptions.addArguments(['--test-type', '--headless', '--no-sandbox', '--disable-dev-shm-usage'])
+        //chromeOptions2.args = ['--test-type', '--headless', '--no-sandbox', '--disable-dev-shm-usage']
+        let driver = new Builder()
+            .forBrowser('chrome')
+            .setChromeOptions(chromeOptions)
+            .build();
         console.log(`Job ${msg.body.id}, rendering ${msg.body.uri}`);  
 
         // Update the status to started
