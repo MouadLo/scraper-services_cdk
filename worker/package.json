@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "aws-sdk": "^2.438.0",
+    "squiss": "^2.2.1"
+  }
+}
