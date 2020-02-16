@@ -20,7 +20,6 @@ RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable 
 RUN apt-get -y update
 RUN apt-get install -y google-chrome-stable
 
-#curl https://intoli.com/install-google-chrome.sh | bash
 
 # install chromedriver
 RUN apt-get install -yqq unzip
