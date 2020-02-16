@@ -48,8 +48,8 @@ const S3 = new AWS.S3();
         try {
             await driver.get(msg.body.uri);
             
-            await driver.wait(until.elementLocated(By.xpath('/html/body/div[10]/div[2]/div/a')), 100000);
-            await driver.findElement(By.xpath('/html/body/div[10]/div[2]/div/a')).click()
+            await driver.wait(until.elementLocated(By.xpath('/html/body/div[11]/div[2]/div/a')), 100000);
+            await driver.findElement(By.xpath('/html/body/div[11]/div[2]/div/a')).click()
             let pageTitle = await (await driver).getTitle();
             console.log(pageTitle)
     
