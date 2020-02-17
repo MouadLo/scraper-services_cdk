@@ -50,7 +50,7 @@ const S3 = new AWS.S3();
         try {
             // 
             await driver.get(msg.body.uri); 
-
+            uri = msg.body.uri;
             await driver.wait(until.elementLocated(By.className('next-dialog-close')), 100000);
             await driver.findElement(By.className('next-dialog-close')).click()
 
