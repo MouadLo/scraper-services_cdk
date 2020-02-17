@@ -18,9 +18,6 @@ const S3 = new AWS.S3();
         maxInFlight: 3
     });
 
-    
-
-
     // What to do when a job pops up on the queue.
     workQueue.on('message', async function (msg) { 
         // Disable sandbox, its preferable to granting CAP_SYS_ADMIN to enable sandbox   
@@ -139,12 +136,12 @@ const S3 = new AWS.S3();
             ExpressionAttributeNames: {
                 '#s': 'status',
                 '#u': 'uri',
-                '#p': 'pageTitle'
+                '#pt': 'pageTitle'
             },
             ExpressionAttributeValues: {
                 ':s': 'done',
                 ':u': uri,
-                ':p': pageTitle
+                ':pt': pageTitle
             }
         }).promise();
 
