@@ -50,6 +50,7 @@ const S3 = new AWS.S3();
 
         let uri;
         let pageTitle;
+        let product = {};
         try {
             await driver.get(msg.body.uri);
             uri = msg.body.uri;
@@ -57,7 +58,7 @@ const S3 = new AWS.S3();
             await driver.findElement(By.className('next-dialog-close')).click()
             pageTitle = await (await driver).getTitle();
             console.log(pageTitle)
-    
+            product[`${pageTitle}`] = pageTitle;
             await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/div/div[2]/div/div[2]/div[7]/div')));
     
             sku_wrap = await driver.findElement(By.xpath('//*[@id="root"]/div/div[2]/div/div[2]/div[7]/div'))
@@ -105,6 +106,19 @@ const S3 = new AWS.S3();
                 let img = await li_elem[k].findElement(By.tagName('img'));
                 let imgUrl = await img.getAttribute('src');
                 console.log(imgUrl.split('_')[0]);
+            }
+
+            specs_list = await driver.findElement(By.className('product-specs-list'));
+            li_specs_list = await specs_list.findElements(By.tagName('li'));
+            for (let k; k < li_specs_lis.length; k++){
+                let property_title = li_specs_lis[k].findElement(By.className('property-title'));
+                let property_title_txt = await property_title.getText();
+
+                let property_desc = li_specs_lis[k].findElement(By.className('property-desc'));
+                let property_desc_txt = await property_desc.getText();
+
+
+                console.log(`property_title : ${property_title_txt} property_desc : ${property_desc_txt}`)
             }
     
         } catch(e) {
