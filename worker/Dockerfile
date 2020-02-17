@@ -1,6 +1,8 @@
 FROM node:12
 
-MAINTAINER Mouad Lo
+MAINTAINER Mouad Lousimi
+
+env test=test
 
 # assuming repo is up to date on host machine
 RUN apt update -y && apt-get install -y \
