@@ -11,8 +11,7 @@ RUN apt update -y && apt-get install -y \
     libpcre3 \
     libpcre3-dev 
 
-# create unprivileged user
-RUN adduser --disabled-password --gecos '' myuser  
+
 
 # install google chrome
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
