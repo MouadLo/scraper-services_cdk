@@ -98,10 +98,14 @@ const S3 = new AWS.S3();
                                 console.log(property_text)
                                 li_arr_property_items.push(property_text);
                             } else if (li_property_item_class == 'sku-property-image') {
+                                let property_obj = {};
                                 let property = await li_property_item.findElement(By.tagName('img'));
-                                let property_attr = await property.getAttribute('title');
-                                console.log(property_attr)
-                                li_arr_property_items.push(property_attr);
+                                let property_attr_title = await property.getAttribute('title');
+                                let property_attr_src = await property.getAttribute('src');
+                                property_obj['Title'] = property_attr_title;
+                                property_obj['src'] = property_attr_src;
+                                console.log(property_obj)
+                                li_arr_property_items.push(property_obj);
                             }
                         }
                     }

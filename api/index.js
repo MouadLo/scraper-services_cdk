@@ -63,7 +63,7 @@ app.get('/job/:id', async function(req, res) {
   if (!status.Item) {
     return res.status(400).send('Not Found');
   } else {
-      status.Item.pageInfo = JSON.parse(status.Item.pageInfo)
+    status.Item.pageInfo = JSON.parse(status.Item.pageInfo)
     return res.status(200).send(status.Item);
   }
 });
