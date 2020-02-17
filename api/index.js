@@ -4,7 +4,8 @@ const app = express();
 const AWS = require('aws-sdk');
 const morgan = require('morgan');
 const uuidv1 = require('uuid/v1');
-const SQS = new AWS.SQS();
+AWS.config.update({region:'us-east-1'});
+
 const DocumentClient = new AWS.DynamoDB.DocumentClient();
 
 const QUEUE_URL = process.env.QUEUE_URL;
@@ -67,6 +68,29 @@ app.get('/job/:id', async function(req, res) {
     return res.status(200).send(status.Item);
   }
 });
+
+// Get the status of a job using its job ID
+app.get('/jobs', async function(req, res) {
+
+  const params = {
+    TableName: process.env.TABLE,
+  };
+  let result;
+  try {
+    result = await DocumentClient.scan(params).promise();
+    // Return the matching list of items in response body
+    console.log(result.Items);
+  } catch (e) {
+    return res.status(400).send('Not Found');
+    console.error(e);
+  }
+  if (!result.Items) {
+    return res.status(400).send('Not Found');
+  } else {
+    return res.status(200).send(result.Items);
+  }
+});
+
 
 app.listen(process.env.PORT || 80);
 
