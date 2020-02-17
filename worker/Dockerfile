@@ -1,6 +1,6 @@
 FROM node:12
 
-MAINTAINER Mouad Lousimi
+MAINTAINER Mouad Lo
 
 # assuming repo is up to date on host machine
 RUN apt update -y && apt-get install -y \
