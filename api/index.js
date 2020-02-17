@@ -88,11 +88,10 @@ app.get('/jobs', async function(req, res) {
   if (!result.Items) {
     return res.status(400).send('Not Found');
   } else {
-    console.log(result.Items);
+
     for (let i = 0; i < result.Items.length - 1; i++){
       if (result.Items[i].pageInfo) {
-        var stringify = JSON.stringify(result.Items[i].pageInfo)
-        result.Items[i].pageInfo = JSON.parse(stringify)
+        result.Items[i].pageInfo = JSON.parse(result.Items[i].pageInfo)
       }
     }
     return res.status(200).send(result.Items);
