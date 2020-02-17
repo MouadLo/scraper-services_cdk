@@ -2,7 +2,8 @@ const Squiss = require('squiss');
 const AWS = require('aws-sdk');
 var webdriver = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
-const {Builder, By, Key, until,Condition,WebElementCondition,WebDriver } = require('selenium-webdriver');
+const { Builder, By, Key, until, Condition, WebElementCondition, WebDriver } = require('selenium-webdriver');
+AWS.config.update({region:'us-east-1'});
 const DocumentClient = new AWS.DynamoDB.DocumentClient();
 const S3 = new AWS.S3();
 
@@ -13,19 +14,18 @@ const S3 = new AWS.S3();
         
     }
     var workQueue = new Squiss({
-        queueUrl: process.env.QUEUE_URL,
+        queueUrl:  'https://sqs.us-east-1.amazonaws.com/932315984983/base-resource-queue276F7297-4Q1W8LDPD37P',
         bodyFormat: 'json',
         maxInFlight: 3
     });
-
-    
+    var chromeCapabilities = webdriver.Capabilities.chrome();
+    // Disable sandbox, its preferable to granting CAP_SYS_ADMIN to enable sandbox   
+    // Fargate tasks have their own isolation model anyway.
+    // Use local /tmp instead of shared memory
 
 
     // What to do when a job pops up on the queue.
     workQueue.on('message', async function (msg) { 
-        // Disable sandbox, its preferable to granting CAP_SYS_ADMIN to enable sandbox   
-        // Fargate tasks have their own isolation model anyway.
-        // Use local /tmp instead of shared memory
         let chromeOptions = new chrome.Options();
         chromeOptions.addArguments(['--test-type', '--headless', '--no-sandbox', '--disable-dev-shm-usage'])
         //chromeOptions2.args = ['--test-type', '--headless', '--no-sandbox', '--disable-dev-shm-usage']
@@ -37,7 +37,7 @@ const S3 = new AWS.S3();
 
         // Update the status to started
         await DocumentClient.update({
-            TableName: process.env.TABLE,
+            TableName: 'base-resource-table8235A42E-GMJVL5881L01',
             Key: { id: msg.body.id },
             UpdateExpression: 'SET #s = :s',
             ExpressionAttributeNames: {
@@ -51,15 +51,13 @@ const S3 = new AWS.S3();
         let uri;
         let pageTitle;
         try {
-            // 
-            await driver.get(msg.body.uri); 
-
+            await driver.get(msg.body.uri);
+            uri = msg.body.uri;
             await driver.wait(until.elementLocated(By.className('next-dialog-close')), 100000);
             await driver.findElement(By.className('next-dialog-close')).click()
-
             pageTitle = await (await driver).getTitle();
             console.log(pageTitle)
-            
+    
             await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/div/div[2]/div/div[2]/div[7]/div')));
     
             sku_wrap = await driver.findElement(By.xpath('//*[@id="root"]/div/div[2]/div/div[2]/div[7]/div'))
@@ -113,7 +111,7 @@ const S3 = new AWS.S3();
             console.error(e);
                 // Update job status to failed
             await DocumentClient.update({
-                TableName: process.env.TABLE,
+                TableName: 'base-resource-table8235A42E-GMJVL5881L01',
                 Key: { id: msg.body.id },
                 UpdateExpression: 'SET #s = :s, #r = :r',
                 ExpressionAttributeNames: {
@@ -130,21 +128,22 @@ const S3 = new AWS.S3();
         
         }finally {
             await driver.quit();
+
         }
         // Update job status to done
         await DocumentClient.update({
-            TableName: process.env.TABLE,
+            TableName: 'base-resource-table8235A42E-GMJVL5881L01',
             Key: { id: msg.body.id },
             UpdateExpression: 'SET #s = :s, #u = :u,#pt = :pt',
             ExpressionAttributeNames: {
                 '#s': 'status',
-            '#u': 'uri',
-            '#p': 'pageTitle'
+                '#u': 'uri',
+                '#pt': 'pageTitle'
             },
             ExpressionAttributeValues: {
                 ':s': 'done',
                 ':u': uri,
-                ':p': pageTitle
+                ':pt': pageTitle
             }
         }).promise();
 
