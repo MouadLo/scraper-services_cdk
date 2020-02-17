@@ -1,15 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const app = express();
 const AWS = require('aws-sdk');
 const morgan = require('morgan');
 const uuidv1 = require('uuid/v1');
-AWS.config.update({region:'us-east-1'});
 
 const DocumentClient = new AWS.DynamoDB.DocumentClient();
 
 const QUEUE_URL = process.env.QUEUE_URL;
 
+app.use(cors())
 app.use(morgan('tiny'));
 app.use(bodyParser.json());
 
@@ -79,9 +80,9 @@ app.get('/jobs', async function(req, res) {
   try {
     result = await DocumentClient.scan(params).promise();
     // Return the matching list of items in response body
-    console.log(result.Items);
+
   } catch (e) {
-    return res.status(400).send('Not Found');
+    return res.status(500)
     console.error(e);
   }
   if (!result.Items) {
