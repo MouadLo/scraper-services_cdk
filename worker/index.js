@@ -138,8 +138,8 @@ const S3 = new AWS.S3();
             UpdateExpression: 'SET #s = :s, #u = :u,#pt = :pt',
             ExpressionAttributeNames: {
                 '#s': 'status',
-            '#u': 'uri',
-            '#p': 'pageTitle'
+                '#u': 'uri',
+                '#p': 'pageTitle'
             },
             ExpressionAttributeValues: {
                 ':s': 'done',
