@@ -1,1 +1,3 @@
 synth
+node_modules
+cdk.out/
